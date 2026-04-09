@@ -1,0 +1,9 @@
+{
+  "name": "Life OS Assistant",
+  "short_name": "LifeOS",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#070b1a",
+  "theme_color": "#070b1a",
+  "icons": []
+}

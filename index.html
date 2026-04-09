@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Life OS Assistant</title>
+  <meta name="theme-color" content="#070b1a" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="bg-orb orb-1"></div>
+  <div class="bg-orb orb-2"></div>
+  <div class="bg-orb orb-3"></div>
+
+  <div id="toastHost" class="toast-host"></div>
+
+  <section id="authScreen" class="auth-screen visible">
+    <div class="auth-shell glass">
+      <div class="brand">
+        <div class="brand-icon">✦</div>
+        <div>
+          <h1>Life OS</h1>
+          <p>مساعدك الشخصي لتنظيم يومك وحياتك</p>
+        </div>
+      </div>
+
+      <div class="tab-switch">
+        <button class="tab-btn active" data-auth-tab="login">تسجيل الدخول</button>
+        <button class="tab-btn" data-auth-tab="signup">إنشاء حساب</button>
+      </div>
+
+      <form id="loginForm" class="auth-form">
+        <label>البريد الإلكتروني</label>
+        <input type="email" id="loginEmail" placeholder="name@email.com" required />
+        <label>كلمة المرور</label>
+        <input type="password" id="loginPassword" placeholder="••••••••" required />
+        <button class="primary-btn" type="submit">دخول</button>
+      </form>
+
+      <form id="signupForm" class="auth-form hidden">
+        <label>الاسم</label>
+        <input type="text" id="signupName" placeholder="اسمك" required />
+        <label>البريد الإلكتروني</label>
+        <input type="email" id="signupEmail" placeholder="name@email.com" required />
+        <label>كلمة المرور</label>
+        <input type="password" id="signupPassword" placeholder="8 أحرف على الأقل" required />
+        <button class="primary-btn" type="submit">إنشاء الحساب</button>
+      </form>
+
+      <p class="tiny-note">جاهز للعمل على GitHub Pages و Firebase بدون npm.</p>
+    </div>
+  </section>
+
+  <main id="appShell" class="app-shell hidden">
+    <aside class="sidebar glass">
+      <div class="sidebar-top">
+        <div class="brand small">
+          <div class="brand-icon">✦</div>
+          <div>
+            <h2>Life OS</h2>
+            <p id="userNameSide">مرحبًا</p>
+          </div>
+        </div>
+        <button id="logoutBtn" class="ghost-btn">تسجيل الخروج</button>
+      </div>
+
+      <nav class="side-nav" id="sideNav"></nav>
+
+      <div class="side-card glass thin">
+        <h3>المساعد الذكي</h3>
+        <p id="sideInsightText">ابدأ بإضافة بياناتك لتظهر لك الاقتراحات الذكية هنا.</p>
+      </div>
+    </aside>
+
+    <section class="content">
+      <header class="topbar glass">
+        <div class="topbar-left">
+          <button id="mobileMenuBtn" class="icon-btn">☰</button>
+          <div>
+            <h1 id="pageTitle">لوحة التحكم</h1>
+            <p id="pageSubtitle">ملخص سريع لحياتك الرقمية</p>
+          </div>
+        </div>
+        <div class="topbar-right">
+          <div class="email-pill" id="userEmailPill">user@email.com</div>
+          <div class="clock-pill" id="clockPill"></div>
+        </div>
+      </header>
+
+      <section id="view-dashboard" class="view active-view">
+        <div class="stats-grid" id="statsGrid"></div>
+
+        <div class="hero-grid">
+          <div class="panel glass panel-xl">
+            <div class="panel-head">
+              <div>
+                <h3>المساعد الذكي</h3>
+                <p>قراءة سريعة ليومك، إنتاجيتك ومصاريفك</p>
+              </div>
+              <button class="ghost-btn" data-open-modal="quickAddModal">إضافة سريعة</button>
+            </div>
+            <div id="insightsList" class="insights-list"></div>
+          </div>
+
+          <div class="panel glass">
+            <div class="panel-head">
+              <div>
+                <h3>نظرة سريعة</h3>
+                <p>مؤشرات اليوم</p>
+              </div>
+            </div>
+            <div class="mini-kpi-list">
+              <div class="mini-kpi"><span>ماء اليوم</span><strong id="waterToday">0 / 8</strong></div>
+              <div class="mini-kpi"><span>مزاج اليوم</span><strong id="moodToday">غير محدد</strong></div>
+              <div class="mini-kpi"><span>العادات المكتملة</span><strong id="habitsCompleted">0</strong></div>
+              <div class="mini-kpi"><span>معدل الإنجاز</span><strong id="productivityRate">0%</strong></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="dashboard-grid">
+          <section class="panel glass">
+            <div class="panel-head"><h3>آخر المهام</h3><button class="link-btn" data-nav="tasks">عرض الكل</button></div>
+            <div id="dashboardTasks" class="list-host"></div>
+          </section>
+          <section class="panel glass">
+            <div class="panel-head"><h3>آخر المصاريف</h3><button class="link-btn" data-nav="expenses">عرض الكل</button></div>
+            <div id="dashboardExpenses" class="list-host"></div>
+          </section>
+          <section class="panel glass">
+            <div class="panel-head"><h3>المواعيد القادمة</h3><button class="link-btn" data-nav="appointments">عرض الكل</button></div>
+            <div id="dashboardAppointments" class="list-host"></div>
+          </section>
+          <section class="panel glass">
+            <div class="panel-head"><h3>الأهداف النشطة</h3><button class="link-btn" data-nav="goals">عرض الكل</button></div>
+            <div id="dashboardGoals" class="list-host"></div>
+          </section>
+        </div>
+      </section>
+
+      <section id="view-expenses" class="view module-view">
+        <div class="module-head">
+          <div><h2>المصاريف</h2><p>تتبع الإنفاق اليومي والأسبوعي والشهري</p></div>
+          <button class="primary-btn" data-open-modal="expenseModal">إضافة مصروف</button>
+        </div>
+        <div class="tool-row">
+          <input id="expenseSearch" class="search-input" placeholder="ابحث في المصاريف..." />
+          <select id="expenseFilter" class="select-input">
+            <option value="all">كل التصنيفات</option>
+            <option>أكل</option><option>مواصلات</option><option>فواتير</option><option>تسوق</option><option>ترفيه</option><option>أخرى</option>
+          </select>
+        </div>
+        <div class="panel glass">
+          <canvas id="expenseChart" height="120"></canvas>
+        </div>
+        <div id="expensesList" class="card-list"></div>
+      </section>
+
+      <section id="view-appointments" class="view module-view">
+        <div class="module-head">
+          <div><h2>المواعيد</h2><p>رتّب أيامك ومواعيدك القادمة</p></div>
+          <button class="primary-btn" data-open-modal="appointmentModal">إضافة موعد</button>
+        </div>
+        <div id="appointmentsList" class="card-list"></div>
+      </section>
+
+      <section id="view-tasks" class="view module-view">
+        <div class="module-head">
+          <div><h2>المهام</h2><p>مهامك اليومية مع الأولويات والحالات</p></div>
+          <button class="primary-btn" data-open-modal="taskModal">إضافة مهمة</button>
+        </div>
+        <div class="tool-row">
+          <select id="taskFilter" class="select-input">
+            <option value="all">كل الحالات</option>
+            <option value="pending">قيد الانتظار</option>
+            <option value="in-progress">قيد التنفيذ</option>
+            <option value="done">مكتملة</option>
+          </select>
+        </div>
+        <div id="tasksList" class="card-list"></div>
+      </section>
+
+      <section id="view-habits" class="view module-view">
+        <div class="module-head">
+          <div><h2>العادات</h2><p>تتبع يومي مع Streak ونسبة التزام</p></div>
+          <button class="primary-btn" data-open-modal="habitModal">إضافة عادة</button>
+        </div>
+        <div id="habitsList" class="card-list"></div>
+      </section>
+
+      <section id="view-goals" class="view module-view">
+        <div class="module-head">
+          <div><h2>الأهداف</h2><p>أهداف قصيرة وطويلة مع تقدم مرئي</p></div>
+          <button class="primary-btn" data-open-modal="goalModal">إضافة هدف</button>
+        </div>
+        <div id="goalsList" class="card-list"></div>
+      </section>
+
+      <section id="view-notes" class="view module-view">
+        <div class="module-head">
+          <div><h2>الملاحظات</h2><p>أفكار سريعة وملاحظات مهمة</p></div>
+          <button class="primary-btn" data-open-modal="noteModal">إضافة ملاحظة</button>
+        </div>
+        <div id="notesList" class="card-list note-grid"></div>
+      </section>
+
+      <section id="view-shopping" class="view module-view">
+        <div class="module-head">
+          <div><h2>قائمة المشتريات</h2><p>قائمة ذكية وسهلة التتبع</p></div>
+          <button class="primary-btn" data-open-modal="shoppingModal">إضافة عنصر</button>
+        </div>
+        <div id="shoppingList" class="card-list"></div>
+      </section>
+
+      <section id="view-journal" class="view module-view">
+        <div class="module-head">
+          <div><h2>اليوميات والمزاج</h2><p>دوّن يومك، مزاجك، واستهلاك الماء</p></div>
+          <button class="primary-btn" data-open-modal="journalModal">إضافة يومية</button>
+        </div>
+        <div class="journal-actions panel glass">
+          <div class="water-box">
+            <h3>متابعة الماء</h3>
+            <p>الهدف الافتراضي 8 أكواب</p>
+            <div class="water-controls">
+              <button class="ghost-btn" id="waterMinusBtn">-</button>
+              <strong id="waterCounter">0</strong>
+              <button class="ghost-btn" id="waterPlusBtn">+</button>
+            </div>
+          </div>
+          <div class="mood-box">
+            <h3>مزاج اليوم</h3>
+            <div class="mood-row">
+              <button class="mood-btn" data-mood="😴">😴</button>
+              <button class="mood-btn" data-mood="🙂">🙂</button>
+              <button class="mood-btn" data-mood="😄">😄</button>
+              <button class="mood-btn" data-mood="🔥">🔥</button>
+              <button class="mood-btn" data-mood="😵">😵</button>
+            </div>
+          </div>
+        </div>
+        <div id="journalList" class="card-list note-grid"></div>
+      </section>
+
+      <section id="view-ai" class="view module-view">
+        <div class="module-head">
+          <div><h2>AI Assistant</h2><p>اقتراحات ذكية مبنية على بياناتك</p></div>
+          <button class="primary-btn" id="refreshAiBtn">تحديث التحليل</button>
+        </div>
+        <div class="panel glass panel-xl">
+          <div id="aiDeepInsights" class="insights-list"></div>
+        </div>
+      </section>
+
+      <section id="view-settings" class="view module-view">
+        <div class="module-head">
+          <div><h2>الإعدادات</h2><p>مظهر التطبيق وتفضيلاتك</p></div>
+        </div>
+        <div class="settings-grid">
+          <div class="panel glass">
+            <h3>المظهر</h3>
+            <div class="settings-row">
+              <span>ألوان أقل حركة</span>
+              <label class="switch">
+                <input type="checkbox" id="reduceMotionToggle" />
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+          <div class="panel glass">
+            <h3>تفضيلات</h3>
+            <div class="settings-row">
+              <span>هدف الماء اليومي</span>
+              <input id="waterGoalInput" type="number" min="1" max="20" class="small-input" value="8" />
+            </div>
+            <button id="saveSettingsBtn" class="primary-btn">حفظ الإعدادات</button>
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <nav class="bottom-nav glass" id="bottomNav"></nav>
+
+    <button id="fabBtn" class="fab-btn" data-open-modal="quickAddModal">＋</button>
+  </main>
+
+  <div id="modalHost"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
