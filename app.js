@@ -683,10 +683,20 @@ function tickClock(){
 
 function parseFirebaseError(err){
   const code = err?.code || "";
-  if(code.includes("invalid-credential")) return "البيانات غير صحيحة.";
+  console.error("Firebase error:", code, err);
+
+  if(code.includes("invalid-credential")) return "الإيميل أو كلمة المرور غير صحيحة.";
+  if(code.includes("invalid-login-credentials")) return "الإيميل أو كلمة المرور غير صحيحة.";
+  if(code.includes("wrong-password")) return "كلمة المرور غير صحيحة.";
+  if(code.includes("user-not-found")) return "هذا الحساب غير موجود.";
   if(code.includes("email-already-in-use")) return "البريد مستخدم مسبقًا.";
   if(code.includes("weak-password")) return "كلمة المرور ضعيفة.";
-  return "حدث خطأ، حاول مرة أخرى.";
+  if(code.includes("too-many-requests")) return "محاولات كثيرة، جرّب لاحقًا.";
+  if(code.includes("network-request-failed")) return "مشكلة اتصال.";
+  if(code.includes("unauthorized-domain")) return "الدومين غير مصرح به.";
+  if(code.includes("permission-denied")) return "مشكلة في صلاحيات Firestore.";
+  
+  return "خطأ: " + code;
 }
 
 function statusLabel(status){
